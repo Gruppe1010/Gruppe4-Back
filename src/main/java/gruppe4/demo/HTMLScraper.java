@@ -22,6 +22,7 @@ public class HTMLScraper {
                     new InputStreamReader(oracle.openStream()));
 
             String inputLine;
+
             while ((inputLine = in.readLine()) != null) {
 
                 // vores News-obj info kommer når de bruger klassen athing i html
@@ -41,27 +42,31 @@ public class HTMLScraper {
                     String line2 = htmlNewsContent[0];
                     String line3 = htmlNewsContent[1];
 
-                    News newNews = new News();
+                    // ! dette var the fix
+                    // vi tjekker om det er en add - når det IKKE er en add indeholder line3 en class="hnuser"
+                    // derfor skipper vi dette while-loop vi hvis den ikke container hnuser
+                    if(!line3.contains("hnuser")){
+                        continue;
+                    }
 
-                  /*
-                    id : int
-                    ranking: int
-                    link : String
-                    title: String
-                    siteName : String
-                    points : int
-                    postedBy : String
-                    postTime : String
-                    amountOfComments : int
-                  * */
+
+                    News newNews = new News();
 
                     // + id
                     // vi sorterer alt andet end tal fra første linje
                     // første linje: <tr class='athing' id='26949862'>
-                    newNews.setId(Integer.parseInt(line1.replaceAll("[^0-9]", "")));
+                    String id = line1.replaceAll("[^0-9]", "");
+
+                    System.out.println("ID: " + id);
+
+                    newNews.setId(Integer.parseInt(id));
 
                     // + ranking
-                    newNews.setRanking(Integer.parseInt(findData(line2, "class=\"rank\">", ".")));
+                    String ranking = findData(line2, "class=\"rank\">", ".");
+
+                    System.out.println("RANKING: " + ranking);
+
+                    newNews.setRanking(Integer.parseInt(ranking));
 
                     // + link
                     newNews.setLink(findData(line2, "<a href=\"", "\""));
@@ -69,65 +74,41 @@ public class HTMLScraper {
                     // + title
                     newNews.setTitle(findData(line2, "class=\"storylink\">", "<"));
 
+                    System.out.println("TITLE: " + newNews.getTitle());
+
                     // + siteName
                     newNews.setSiteName(findData(line2, "class=\"sitestr\">", "<"));
 
                     // + points
                     String points = findData(line3, "id=\"score_" + newNews.getId() + "\">", "p");
 
-                    points = points.substring(0, points.length()-1); // sletter det sidste mellemrum
+                    points = points.substring(0, points.length()-1); // sletter det sidste mellemrum som er efter tallet
 
+                    System.out.println("POINTS: " + points);
                     newNews.setPoints(Integer.parseInt(points));
 
                     // + postedBy
                     newNews.setPostedBy(findData(line3, "class=\"hnuser\">", "<"));
 
                     // + postTime
-                    newNews.setPostTime(findData(line3, "<a href=\"item?id=" + newNews.getId() + "\">", "<"));
+                    newNews.setPostTime(findData(line3, "class=\"age\"><a href=\"item?id=" + newNews.getId() + "\">", "<"));
 
-                    // + amountOfComment
+                    // + amountOfComments
+                    String amountOfComments = findData(line3, "| <a href=\"item?id=" + newNews.getId() + "\">", "&");
 
-                    /*
+                    System.out.println("AMOUNTOFCOMMENTS: " + amountOfComments);
 
-                    String indicator = "<a href=\"item?id=" + newNews.getId() + "\">";
-
-
-                    int startIndexOfIndicator = line3.lastIndexOf(indicator);
-
-                    System.out.println("startIndex: " + startIndexOfIndicator);
-                    System.out.println("fra start af indicator: " + line3.substring(startIndexOfIndicator));
+                    newNews.setAmountOfComments(Integer.parseInt(amountOfComments));
 
 
-                    // vi laver ny String uden alt det som står før og inkl. indicator-string
-                    String amountOfComments = line3.substring(startIndexOfIndicator + indicator.length());
 
-                    // vi cutter resten af line2 væk så vi kun har et tal tilbage
-                    newNews.setAmountOfComments(Integer.parseInt(amountOfComments.substring(0, amountOfComments.indexOf(amountOfComments))));
 
-                     */
+                    System.out.println("NEWNEWS: " + newNews);
 
 
 
 
 
-
-
-                    String testString = findData(line3, "| <a href=\"item?id=" + newNews.getId() + "\">", "&");
-
-                    System.out.println("TESTSTRING: " + testString);
-
-                    newNews.setAmountOfComments(Integer.parseInt(testString));
-
-
-
-
-                    // System.out.println("NEWNEWS: " + newNews);
-
-
-                    for (int i = 0; i < htmlNewsContent.length; i++) {
-
-                        System.out.println(htmlNewsContent[i]);
-                    }
                 }
 
                 //System.out.println(inputLine);
@@ -136,7 +117,7 @@ public class HTMLScraper {
             in.close();
         }
         catch(Exception e){
-            System.out.println("Error in scraping: " + e.getMessage());
+            System.out.println("Error in scraping: " + e);
         }
     }
 
