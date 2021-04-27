@@ -8,44 +8,50 @@ import javax.persistence.*;
 public class News {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-
-    private int rank;
-
-
+    @Column(nullable = false)
     private String link;
 
+    @Column(nullable = false)
+    private int ranking;
 
+    @Column(nullable = false)
     private String title;
 
-
+    @Column(nullable = false)
     private String siteName;
 
-
+    @Column(nullable = false)
     private int points;
 
+    @Column(nullable = false)
     private String postedBy;
 
+    @Column(nullable = false)
     private String postTime;
 
-
+    @Column(nullable = false)
     private int amountOfComments;
 
 
+
+
     public News(){}
-    public News(int id, int rank, String link, String title, String siteName, int points, String postedBy, String postTime, int amountOfComments) {
-        this.id = id;
-        this.rank = rank;
-        this.link = link;
-        this.title = title;
-        this.siteName = siteName;
-        this.points = points;
-        this.postedBy = postedBy;
-        this.postTime = postTime;
-        this.amountOfComments = amountOfComments;
-    }
+
+   public News(int id, int ranking, String link, String title, String siteName, int points, String postedBy, String postTime, int amountOfComments) {
+       this.id = id;
+       this.ranking = ranking;
+       this.link = link;
+       this.title = title;
+       this.siteName = siteName;
+       this.points = points;
+       this.postedBy = postedBy;
+       this.postTime = postTime;
+       this.amountOfComments = amountOfComments;
+   }
+
+
 
     public int getId() {
         return id;
@@ -53,11 +59,11 @@ public class News {
     public void setId(int id) {
         this.id = id;
     }
-    public int getRank() {
-        return rank;
+    public int getRanking() {
+        return ranking;
     }
-    public void setRank(int rank) {
-        this.rank = rank;
+    public void setRanking(int ranking) {
+        this.ranking = ranking;
     }
     public String getLink() {
         return link;
@@ -100,5 +106,20 @@ public class News {
     }
     public void setAmountOfComments(int amountOfComments) {
         this.amountOfComments = amountOfComments;
+    }
+
+    @Override
+    public String toString() {
+        return "News{" +
+                "id=" + id +
+                ", link='" + link + '\'' +
+                ", ranking=" + ranking +
+                ", title='" + title + '\'' +
+                ", siteName='" + siteName + '\'' +
+                ", points=" + points +
+                ", postedBy='" + postedBy + '\'' +
+                ", postTime='" + postTime + '\'' +
+                ", amountOfComments=" + amountOfComments +
+                '}';
     }
 }
