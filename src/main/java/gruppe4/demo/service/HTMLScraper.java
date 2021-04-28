@@ -1,4 +1,4 @@
-package gruppe4.demo;
+package gruppe4.demo.service;
 
 import gruppe4.demo.models.News;
 
@@ -42,7 +42,6 @@ public class HTMLScraper {
                     String line2 = htmlNewsContent[0];
                     String line3 = htmlNewsContent[1];
 
-                    // ! dette var the fix
                     // vi tjekker om det er en add - når det IKKE er en add indeholder line3 en class="hnuser"
                     // derfor skipper vi dette while-loop vi hvis den ikke container hnuser
                     if(!line3.contains("hnuser")){

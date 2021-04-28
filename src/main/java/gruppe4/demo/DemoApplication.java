@@ -1,5 +1,6 @@
 package gruppe4.demo;
 
+import gruppe4.demo.service.HTMLScraper;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
