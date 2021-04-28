@@ -7,17 +7,19 @@ import javax.persistence.Id;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.util.HashSet;
+import java.util.Set;
 
 public class HTMLScraper {
 
-    public HTMLScraper() {
-        scrape();
-    }
+    public HTMLScraper() {}
 
-    public void scrape(){
+    public Set<News> scrape(String url){
         try {
 
-            URL oracle = new URL("https://news.ycombinator.com/");
+            Set<News> news = new HashSet<>();
+
+            URL oracle = new URL(url);
             BufferedReader in = new BufferedReader(
                     new InputStreamReader(oracle.openStream()));
 
@@ -42,12 +44,12 @@ public class HTMLScraper {
                     String line2 = htmlNewsContent[0];
                     String line3 = htmlNewsContent[1];
 
+
                     // vi tjekker om det er en add - når det IKKE er en add indeholder line3 en class="hnuser"
                     // derfor skipper vi dette while-loop vi hvis den ikke container hnuser
                     if(!line3.contains("hnuser")){
                         continue;
                     }
-
 
                     News newNews = new News();
 
@@ -55,25 +57,25 @@ public class HTMLScraper {
                     // vi sorterer alt andet end tal fra første linje
                     // første linje: <tr class='athing' id='26949862'>
                     String id = line1.replaceAll("[^0-9]", "");
-
-                    System.out.println("ID: " + id);
-
                     newNews.setId(Integer.parseInt(id));
 
                     // + ranking
                     String ranking = findData(line2, "class=\"rank\">", ".");
-
-                    System.out.println("RANKING: " + ranking);
-
                     newNews.setRanking(Integer.parseInt(ranking));
 
                     // + link
                     newNews.setLink(findData(line2, "<a href=\"", "\""));
 
                     // + title
-                    newNews.setTitle(findData(line2, "class=\"storylink\">", "<"));
+                    String title = findData(line2, "class=\"storylink\"", "<");
 
-                    System.out.println("TITLE: " + newNews.getTitle());
+                    if(title.contains("rel=\"nofollow\">")) {
+                        title = title.replaceAll("rel=\"nofollow\">", "");
+                    }
+
+                    title = title.substring(1);
+
+                    newNews.setTitle(title);
 
                     // + siteName
                     newNews.setSiteName(findData(line2, "class=\"sitestr\">", "<"));
@@ -83,7 +85,6 @@ public class HTMLScraper {
 
                     points = points.substring(0, points.length()-1); // sletter det sidste mellemrum som er efter tallet
 
-                    System.out.println("POINTS: " + points);
                     newNews.setPoints(Integer.parseInt(points));
 
                     // + postedBy
@@ -93,31 +94,38 @@ public class HTMLScraper {
                     newNews.setPostTime(findData(line3, "class=\"age\"><a href=\"item?id=" + newNews.getId() + "\">", "<"));
 
                     // + amountOfComments
-                    String amountOfComments = findData(line3, "| <a href=\"item?id=" + newNews.getId() + "\">", "&");
+                    String amountOfComments = findData(line3, "| <a href=\"item?id=" + newNews.getId() + "\">", "</a>");
 
-                    System.out.println("AMOUNTOFCOMMENTS: " + amountOfComments);
+                    // HVIS der er lavet kommentarer:
+                    if(amountOfComments.contains("&nbsp;comments")){
+
+                        amountOfComments = amountOfComments.replaceAll("&nbsp;comments", "");
+                    }
+                    // hvis IKKE der er lavet kommentarer, står der kun 'discuss', og det ændrer vi til 0
+                    else{
+                        amountOfComments = "0";
+                    }
 
                     newNews.setAmountOfComments(Integer.parseInt(amountOfComments));
 
-
-
-
-                    System.out.println("NEWNEWS: " + newNews);
-
-
-
-
-
+                    // tilføj newNews-obj til Set som returneres
+                    news.add(newNews);
                 }
-
-                //System.out.println(inputLine);
 
             }
             in.close();
+
+            if(news.size() == 0){
+                return null;
+            }
+            return news;
+
         }
         catch(Exception e){
             System.out.println("Error in scraping: " + e);
         }
+
+        return null;
     }
 
     public String findData(String line, String indicator, String endChar){
