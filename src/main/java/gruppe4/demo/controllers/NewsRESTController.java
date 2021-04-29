@@ -31,9 +31,13 @@ public class NewsRESTController {
 
             // hvis der IKKE findes et exact match i db
             // ! HER arbejder vi videre - lav query
+            /*
             if(!newsRepository.exactMatch(n)){
                 newsRepository.save(n);
             }
+
+             */
+            newsRepository.save(n);
         }
 
         return new ResponseEntity<>(news, HttpStatus.OK);
