@@ -20,7 +20,7 @@ public class NewsRESTController {
 
     NewsService newsService = new NewsService();
 
-    @GetMapping("/")
+    @GetMapping("/news")
     public ResponseEntity<Set<News>> index() {
 
         Set<News> news = newsService.scrapeAllNewsPages();
