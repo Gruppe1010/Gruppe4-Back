@@ -8,9 +8,6 @@ import java.util.Set;
 
 public class NewsService {
 
-
-
-
     /**
      * Vi scraper alle siderne som har ranking
      *
