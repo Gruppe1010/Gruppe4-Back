@@ -52,6 +52,11 @@ public class NewsService {
 
     public ResponseEntity<List<News>> findAll(){
 
+        // https://stackoverflow.com/questions/25486583/how-to-use-orderby-with-findall-in-spring-data
+        // findAllByOrderByRankingAsc() det er en JPA-metode
+        //      - vi sætter vores eget kolonnenavn ind
+        //      - eller man kan sige findTop10 - 10 er et vilkårligt tal
+        //      - eller man kan sige Desc i stedet for Asc
         List<News> news = newsRepository.findAllByOrderByRankingAsc();
 
         // hvis der IKKE er noget på listen
