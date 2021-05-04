@@ -11,4 +11,7 @@ public interface NewsRepository extends JpaRepository<News, Integer> {
     // https://docs.spring.io/spring-data/jpa/docs/current/reference/html/#repositories.query-methods.query-creation
     List<News> findAllByOrderByRankingAsc();
 
+
+    List<News> findAllByOrderByRankingDesc();
+
 }

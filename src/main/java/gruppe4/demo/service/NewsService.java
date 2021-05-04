@@ -57,7 +57,10 @@ public class NewsService {
         //      - vi sætter vores eget kolonnenavn ind
         //      - eller man kan sige findTop10 - 10 er et vilkårligt tal
         //      - eller man kan sige Desc i stedet for Asc
-        List<News> news = newsRepository.findAllByOrderByRankingAsc();
+        // List<News> news = newsRepository.findAllByOrderByRankingAsc();
+
+        List<News> news = newsRepository.findAllByOrderByRankingDesc();
+
 
         // hvis der IKKE er noget på listen
         if(news.size() == 0){
