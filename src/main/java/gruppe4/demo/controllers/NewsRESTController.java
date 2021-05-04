@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -25,7 +26,7 @@ public class NewsRESTController {
     NewsService newsService;
 
     @GetMapping("/news")
-    public ResponseEntity<Set<News>> index() {
+    public ResponseEntity<List<News>> index() {
 
         // scrapedNews-Set indeholder alle de nyoprettede News-obj ud fra scrapet
         Set<News> scrapedNews = newsService.scrapeAllNewsPages();
@@ -33,7 +34,6 @@ public class NewsRESTController {
         // vi opdaterer dem // TODO test at denne virker
         newsService.updateNewsInDb(scrapedNews);
 
-        // ! Arbejd herfra
         return newsService.findAll();
     }
 
