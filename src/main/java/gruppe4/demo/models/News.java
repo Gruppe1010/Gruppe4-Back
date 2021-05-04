@@ -3,6 +3,7 @@ package gruppe4.demo.models;
 import com.sun.istack.NotNull;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 public class News {
@@ -122,4 +123,29 @@ public class News {
                 ", amountOfComments=" + amountOfComments +
                 '}';
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        News news = (News) o;
+        return id == news.id &&
+                ranking == news.ranking &&
+                points == news.points &&
+                amountOfComments == news.amountOfComments &&
+                Objects.equals(link, news.link) &&
+                Objects.equals(title, news.title) &&
+                Objects.equals(siteName, news.siteName) &&
+                Objects.equals(postedBy, news.postedBy) &&
+                Objects.equals(postTime, news.postTime);
+    }
+
+    /* ! Find ud af om denne SKAL ind for at equals virker
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, link, ranking, title, siteName, points, postedBy, postTime, amountOfComments);
+    }
+
+     */
 }

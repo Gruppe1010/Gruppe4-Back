@@ -11,38 +11,30 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Optional;
 import java.util.Set;
 
 @RestController
 @CrossOrigin(value = "*")
 public class NewsRESTController {
 
-    @Autowired
-    NewsRepository newsRepository;
+    // TODO ranking - der kommer til at ligge mange med samme ranking (SIDSTE ranking) i db
 
-    NewsService newsService = new NewsService();
+
+    @Autowired
+    NewsService newsService;
 
     @GetMapping("/news")
     public ResponseEntity<Set<News>> index() {
 
-        Set<News> news = newsService.scrapeAllNewsPages();
+        // scrapedNews-Set indeholder alle de nyoprettede News-obj ud fra scrapet
+        Set<News> scrapedNews = newsService.scrapeAllNewsPages();
 
+        // vi opdaterer dem // TODO test at denne virker
+        newsService.updateNewsInDb(scrapedNews);
 
-
-        for(News n : news){
-
-            // hvis der IKKE findes et exact match i db
-            // ! HER arbejder vi videre - lav query
-            /*
-            if(!newsRepository.exactMatch(n)){
-                newsRepository.save(n);
-            }
-
-             */
-            newsRepository.save(n);
-        }
-
-        return new ResponseEntity<>(news, HttpStatus.OK);
+        // ! Arbejd herfra
+        return newsService.findAll();
     }
 
 
