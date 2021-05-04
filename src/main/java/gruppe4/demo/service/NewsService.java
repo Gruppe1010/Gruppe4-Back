@@ -45,9 +45,8 @@ public class NewsService {
 
     /***/
     public void updateNewsInDb(Set<News> news){
-        for(News n : news){
-            newsRepository.save(n);
-        }
+
+        newsRepository.saveAll(news);
     }
 
 
