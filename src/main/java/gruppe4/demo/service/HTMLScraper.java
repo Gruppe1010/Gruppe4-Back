@@ -12,7 +12,7 @@ import java.util.Set;
 
 public class HTMLScraper {
 
-    public HTMLScraper() {}
+    public HTMLScraper() {} // test
 
     public Set<News> scrape(String url){
         try {
