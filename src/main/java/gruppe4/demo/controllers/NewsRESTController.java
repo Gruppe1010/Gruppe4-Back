@@ -31,7 +31,7 @@ public class NewsRESTController {
         // scrapedNews-Set indeholder alle de nyoprettede News-obj ud fra scrapet
         Set<News> scrapedNews = newsService.scrapeAllNewsPages();
 
-        // vi opdaterer dem // TODO test at denne virker
+        // vi opdaterer dem
         newsService.updateNewsInDb(scrapedNews);
 
         return newsService.findAll();

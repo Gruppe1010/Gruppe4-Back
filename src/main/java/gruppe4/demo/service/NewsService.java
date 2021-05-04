@@ -45,47 +45,29 @@ public class NewsService {
 
     /***/
     public void updateNewsInDb(Set<News> news){
-
         for(News n : news){
-
-            Optional<News> optionalNews = newsRepository.findById(n.getId());
-
-            // hvis den har fundet en news med samme id
-            if(optionalNews.isPresent()){
-
-                // tjek om de er HELT ens
-                News foundNews = optionalNews.get();
-
-                // hvis de IKKE er HELT ens, skal den opdateres
-                if(!n.equals(foundNews)){
-                    newsRepository.updateNews(n, n.getId());
-                }
-            } else{ // hvis den IKKE er fundet i db, skal den indsætte
-                newsRepository.save(n);
-                System.out.println("TEST: " + n);
-            }
+            newsRepository.save(n);
         }
     }
 
 
     public ResponseEntity<List<News>> findAll(){
 
-        List<News> news = newsRepository.findAll();
+        List<News> news = newsRepository.findAllByOrderByRankingAsc();
 
         // hvis der IKKE er noget på listen
         if(news.size() == 0){
             return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
         }
 
+        // TODO slet test-print
         for(News n : news){
-            System.out.println(n);
+            System.out.println(n.getRanking());
         }
 
         // ellers ER der noget på listen, og så bliver den returneret
         return new ResponseEntity<>(news, HttpStatus.OK);
     }
-
-
 }
 
 

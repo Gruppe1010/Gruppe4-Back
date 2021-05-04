@@ -25,7 +25,7 @@ public class HTMLScraper {
 
             String inputLine;
 
-            while ((inputLine = in.readLine()) != null) {
+            while((inputLine = in.readLine()) != null) {
 
                 // vores News-obj info kommer når de bruger klassen athing i html
 
@@ -63,8 +63,22 @@ public class HTMLScraper {
                     String ranking = findData(line2, "class=\"rank\">", ".");
                     newNews.setRanking(Integer.parseInt(ranking));
 
+                    // + siteName
+                    newNews.setSiteName(findData(line2, "class=\"sitestr\">", "<"));
+
                     // + link
-                    newNews.setLink(findData(line2, "<a href=\"", "\""));
+                    String link = findData(line2, "<a href=\"", "\"");
+
+                    // hvis linket IKKE container en http er det fordi det linker til deres EGEN side,
+                    // og så skal vi lige tilføje deres egen side til link-roden
+                    // PLUS vi skal ændre siteName-attributten
+                    if(!link.contains("http")){
+                        link = "https://news.ycombinator.com/" + link;
+
+                        newNews.setSiteName("news.ycombinator.com");
+                    }
+
+                    newNews.setLink(link);
 
                     // + title
                     String title = findData(line2, "class=\"storylink\"", "<");
@@ -77,8 +91,7 @@ public class HTMLScraper {
 
                     newNews.setTitle(title);
 
-                    // + siteName
-                    newNews.setSiteName(findData(line2, "class=\"sitestr\">", "<"));
+
 
                     // + points
                     String points = findData(line3, "id=\"score_" + newNews.getId() + "\">", "p");
@@ -101,6 +114,10 @@ public class HTMLScraper {
 
                         amountOfComments = amountOfComments.replaceAll("&nbsp;comments", "");
                     }
+                    else if(amountOfComments.contains("&nbsp;comment")){
+
+                        amountOfComments = amountOfComments.replaceAll("&nbsp;comment", "");
+                    }
                     // hvis IKKE der er lavet kommentarer, står der kun 'discuss', og det ændrer vi til 0
                     else{
                         amountOfComments = "0";
@@ -119,7 +136,6 @@ public class HTMLScraper {
                 return null;
             }
             return news;
-
         }
         catch(Exception e){
             System.out.println("Error in scraping: " + e);
